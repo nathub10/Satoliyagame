@@ -1,0 +1,419 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      height: 350vh;
+      background-color: #f0f8ff;
+    }
+
+    .rules {
+      width: 25%;
+      background-color: #fff8dc;
+      padding: 20px;
+      border-right: 2px solid #ccc;
+    }
+
+    .rules h2 {
+      margin-top: 0;
+    }
+
+    .game-container {
+      flex: 1;
+      padding: 20px;
+      background-color: #e0f7fa;
+    }
+
+    canvas {
+      border: 2px solid #000;
+    }
+  </style>
+</head>
+<body>
+  <div class="rules">
+    <h2>Game Rules</h2>
+    <ul>
+      <li>Hit the stacked stones with the ball.</li>
+      <li>Rearrange stones within 7 secs time limit.</li>
+      <li>Advance to next level after 2 successful hits.</li>
+      <li>In level 2 rearrange the stones within 5 secs time limit.</li>
+      <li>Game ends after succeesful rebuilding.</li>
+      <li><br> The Pithu (Satoliya) game relates closely to Physics concepts. When the ball is thrown to hit the stacked stones, it demonstrates <u>**projectile motion**</u>, as the ball follows a curved path under gravity. On impact, <u>**collision and momentum transfer**</u> occur, showing how objects behave when they interact. The game also reflects <u>**Newton’s laws of motion**</u>, where the applied force causes the ball to move and the stones to scatter. Additionally, <u>**energy transformation**</u> is seen when the stones’ potential energy becomes kinetic energy as they fall. Lastly, the <u>**friction**</u> between the ground and the moving ball or stones affects how they slide or stop. Thus, Pithu combines fun with core physics concepts.<br> <b>This traditional gully (street) game offers a fun way to understand physics in real life</li></b>
+
+    </ul>
+  </div>
+
+  
+  <script>
+    // Your game logic JavaScript goes here
+  </script>
+  <title>Satoliya Game</title>
+  <style>
+    body
+ {
+      margin: 0;
+      font-family: sans-serif;
+      background-color: #e0f7fa;
+    }
+    .game-container {
+      position: relative;
+      width: 800px;
+      height: 500px;
+      margin: 20px auto;
+      background-color: #b3e5fc;
+      border: 2px solid #0288d1;
+      overflow: hidden;
+    }
+    .game-title {
+      position: absolute;
+      top: 5px;
+      width: 100%;
+      text-align: center;
+      font-size: 20px;
+      font-weight: bold;
+      color: #01579b;
+      z-index: 10;
+    }
+.game-container {
+  position: relative;
+  width: 800px;
+  height: 500px;
+  margin: 20px auto;
+  background: url('C:/Users/enatasr/OneDrive - Ericsson/Desktop/python game/8uw0_0hp1_210511.jpg') no-repeat center center;
+  background-size: cover;
+  border: 2px solid #0288d1;
+  overflow: hidden;
+}
+
+    .stack {
+      position: absolute;
+      bottom: 100px;
+      left: 375px;
+      display: flex;
+      flex-direction: column-reverse;
+      align-items: center;
+    }
+    .stone {
+      width: 50px;
+      height: 20px;
+      background-color: brown;
+      margin-bottom: 2px;
+      cursor: pointer;
+    }
+    .ball {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background-color: green;
+      cursor: pointer;
+      top: 420px;
+      left: 100px;
+      display: none;
+      transition: top 0.3s linear, left 0.3s linear;
+    }
+    .scoreboard {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      background: white;
+      padding: 10px;
+      border: 2px solid black;
+    }
+    .rebuilding-msg {
+      position: absolute;
+      top: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: yellow;
+      padding: 10px;
+      display: none;
+      font-weight: bold;
+    }
+    .start-btn, .restart-btn {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      padding: 10px 20px;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .restart-btn {
+      right: 140px;
+      background-color: #f44336;
+      display: block;
+    }
+    .timer-bar {
+      position: absolute;
+      top: 70px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 200px;
+      height: 10px;
+      background: #ddd;
+      display: none;
+    }
+    .timer-fill {
+      height: 100%;
+      background: red;
+      width: 100%;
+      transition: width 1s linear;
+    }
+    .circle-zone {
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      border: 3px dashed #000;
+      border-radius: 50%;
+      bottom: 100px;
+      left: 300px;
+      display: none;
+    }
+    .ribbons {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 199;
+      display: none;
+    }
+    .ribbon {
+      position: absolute;
+      width: 20px;
+      height: 100px;
+      background: linear-gradient(to bottom, #f06292, #e91e63);
+      animation: fall 3s infinite;
+    }
+    @keyframes fall {
+      0% { transform: translateY(-100px); opacity: 1; }
+      100% { transform: translateY(500px); opacity: 0; }
+    }
+    .game-over {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      color: white;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      font-size: 24px;
+      flex-direction: column;
+      z-index: 999;
+      text-align: center;
+      padding: 20px;
+    }
+    .game-over button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+<div class="game-container" id="gameContainer">
+  <div class="game-title"><b><u>Satoliya (traditional
+street game)</u></b></div>
+  <div class="stack" id="stack"></div>
+  <div class="ball" id="ball" onclick="shootBall()"></div>
+  <div class="scoreboard" id="scoreboard">Score: 0</div>
+  <div class="rebuilding-msg" id="rebuildingMsg">Rebuild the stack in order!</div>
+  <div class="timer-bar" id="timerBar"><div class="timer-fill" id="timerFill"></div></div>
+  <div class="circle-zone" id="circleZone"></div>
+  <button class="start-btn" id="startBtn" onclick="startGame()">Start Game</button>
+  <button class="restart-btn" id="restartBtn" onclick="location.reload()">Restart</button>
+  <audio id="bgMusic" loop>
+    <source src="https://www.bensound.com/bensound-music/bensound-littleidea.mp3" type="audio/mp3">
+  </audio>
+  <div class="ribbons" id="ribbons"></div>
+  <div class="game-over" id="gameOverScreen">
+    <div>Game Over! Try again.</div>
+    <button onclick="location.reload()">Restart</button>
+    <p style="margin-top: 20px; font-size: 14px;">
+      The game of Pithu (Lagori) connects with Physics through concepts like <strong>projectile motion</strong> when the ball is thrown, 
+<strong>force and motion</strong><br> during the impact on stones, and <strong>energy transfer</strong> from the ball to the stack. 
+It also involves <strong>gravity</strong> as stones fall, <strong>friction</strong> when they slide,<br><br> and <strong>collisions</strong>
+during impact. 
+<Strong>Newton’s Laws of Motion</strong>
+The ball’s motion and the stones falling illustrate Newton’s laws — <br><br>especially action-reaction and acceleration due to force.
+<strong><br><br>Collision and Momentum</strong>.<br><br>When the ball 
+hits the stones, momentum is transferred.
+It shows conservation of momentum and impact effects<br><br>
+      This traditional Gully (street) game offers a fun way to understand physics in real life.<br><br>
+      <u>Thank you for playing SATOLIYA<br><br><strong>Game created by <b>Shrey Srivastava & Aradhya</b></strong> - Amity International School, Sector-43, Gurgaon
+    </p>
+  </div>
+</div>
+<script>
+let rebuildTimeout;
+let score = 0;
+let rebuildCount = 0;
+let level = 1;
+
+function startGame() {
+  document.getElementById('startBtn').style.display = 'none';
+  document.getElementById('gameOverScreen').style.display = 'none';
+  document.getElementById('ribbons').style.display = 'none';
+  const bgMusic = document.getElementById('bgMusic');
+  bgMusic.play();
+  const ball = document.getElementById('ball');
+  ball.style.display = 'block';
+  ball.style.left = '100px';
+  ball.style.top = '420px';
+  const stack = document.getElementById('stack');
+  stack.innerHTML = '';
+  const stonesToPlace = level === 2 ? 5 : 7;
+  for (let i = 0; i < stonesToPlace; i++) {
+    const stone = document.createElement('div');
+    stone.className = 'stone';
+    stack.appendChild(stone);
+  }
+  updateScore();
+}
+
+function shootBall() {
+  const ball = document.getElementById('ball');
+  const stack = document.getElementById('stack');
+  const targetX = stack.offsetLeft + stack.offsetWidth / 2 - ball.offsetWidth / 2;
+  const targetY = stack.offsetTop + stack.offsetHeight / 2 - ball.offsetHeight / 2;
+  ball.style.left = `${targetX}px`;
+  ball.style.top = `${targetY}px`;
+  setTimeout(() => {
+    scatterStones();
+  }, 500);
+}
+
+function scatterStones() {
+  const stack = document.getElementById('stack');
+  const stones = Array.from(stack.children);
+  stack.innerHTML = '';
+  const container = document.getElementById('gameContainer');
+  stones.forEach(stone => {
+    stone.style.position = 'absolute';
+    stone.style.left = `${Math.random() * 700}px`;
+    stone.style.top = `${Math.random() * 400}px`;
+    stone.classList.add('scattered');
+    stone.classList.remove('rebuilt');
+    stone.onclick = () => tryRebuildStone(stone);
+    container.appendChild(stone);
+  });
+  document.getElementById('rebuildingMsg').style.display = 'block';
+  startRebuildTimer();
+}
+
+function tryRebuildStone(stone) {
+  const stack = document.getElementById('stack');
+  if (!stone.classList.contains('rebuilt')) {
+    stone.classList.add('rebuilt');
+    stone.style.position = '';
+    stone.style.left = '';
+    stone.style.top = '';
+    stack.appendChild(stone);
+    rebuildCount++;
+    const targetCount = level === 2 ? 5 : 7;
+    if (rebuildCount === targetCount) {
+      clearInterval(rebuildTimeout);
+      document.getElementById('rebuildingMsg').style.display = 'none';
+      document.getElementById('timerBar').style.display = 'none';
+      score++;
+      updateScore();
+      if (score >= 2) {
+        if (level === 1) {
+          level = 2;
+          alert('Welcome to Level 2!');
+          setTimeout(startGame, 1000);
+        } else {
+          document.getElementById('ribbons').style.display = 'block';
+          showRibbons();
+
+          const winScreen = document.createElement('div');
+          winScreen.style.position = 'absolute';
+          winScreen.style.top = '0';
+          winScreen.style.left = '0';
+          winScreen.style.width = '100%';
+          winScreen.style.height = '100%';
+          winScreen.style.backgroundColor = 'rgba(0,0,0,0.85)';
+          winScreen.style.color = 'white';
+          winScreen.style.display = 'flex';
+          winScreen.style.flexDirection = 'column';
+          winScreen.style.alignItems = 'center';
+          winScreen.style.justifyContent = 'center';
+          winScreen.style.fontSize = '36px';
+          winScreen.innerHTML = '<div>🎉 YOU WIN! 🎉</div><br><button onclick="location.reload()" style="padding:10px 20px;font-size:20px;">Play Again</button>';
+          document.getElementById('gameContainer').appendChild(winScreen);
+        }
+      } else {
+        alert('Success! You scored a point. Starting next round...');
+        setTimeout(startGame, 1000);
+      }
+    }
+  }
+}
+function setBackgroundForLevel() {
+  const container = document.getElementById('gameContainer');
+  if (level === 3) {
+    container.style.backgroundImage = "url('your-level3-background.jpg')";
+  } else if (level === 2) {
+    container.style.backgroundImage = "url('your-level2-background.jpg')";
+  } else {
+    container.style.backgroundImage = "none";
+  }
+}
+function startRebuildTimer() {
+  const timerBar = document.getElementById('timerBar');
+  const timerFill = document.getElementById('timerFill');
+  timerBar.style.display = 'block';
+  const timeLimit = level === 2 ? 4 : 7;
+  let seconds = timeLimit;
+  timerFill.style.width = '100%';
+  rebuildCount = 0;
+  rebuildTimeout = setInterval(() => {
+    seconds--;
+    timerFill.style.width = (seconds / timeLimit * 100) + '%';
+    if (seconds <= 0) {
+      clearInterval(rebuildTimeout);
+      showGameOver();
+    }
+  }, 1000);
+}
+
+function showGameOver() {
+  document.getElementById('gameOverScreen').style.display = 'flex';
+  document.getElementById('ball').style.display = 'none';
+  document.getElementById('rebuildingMsg').style.display = 'none';
+  document.getElementById('timerBar').style.display = 'none';
+}
+
+function updateScore() {
+  document.getElementById('scoreboard').innerText = 'Score: ' + score;
+}
+
+function showRibbons() {
+  const container = document.getElementById('ribbons');
+  container.innerHTML = '';
+  for (let i = 0; i < 15; i++) {
+    const r = document.createElement('div');
+    r.className = 'ribbon';
+    r.style.left = Math.random() * 780 + 'px';
+    r.style.animationDelay = Math.random() * 3 + 's';
+    container.appendChild(r);
+  }
+}
+</script>
+</body>
+</html>
